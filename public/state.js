@@ -1,0 +1,346 @@
+export const FALLBACK_COVER = '/placeholder-cover.svg';
+export const ASSET_VERSION = '20260422-06';
+export const UI_STATE_STORAGE_KEY = 'quadroz_ui_state_v1';
+export const LEGACY_UI_STATE_STORAGE_KEY = 'mangahub_ui_state_v2';
+export const TOKEN_STORAGE_KEY = 'quadroz_token';
+export const SESSION_TOKEN_STORAGE_KEY = 'quadroz_token_session';
+export const LEGACY_TOKEN_STORAGE_KEY = 'mangahub_token';
+
+export const assetPath = (filePath) => `${filePath}?v=${encodeURIComponent(ASSET_VERSION)}`;
+
+export const getDefaultLibraryAdvancedFilters = () => ({
+  includeGenres: [],
+  excludeGenres: [],
+  includeStatuses: [],
+  excludeStatuses: [],
+  includeLanguages: [],
+  excludeLanguages: [],
+  includeCategories: [],
+  excludeCategories: [],
+  sources: [],
+  strictInclude: false,
+  strictExclude: false
+});
+
+export const state = {
+  token:
+    localStorage.getItem(TOKEN_STORAGE_KEY) ||
+    sessionStorage.getItem(SESSION_TOKEN_STORAGE_KEY) ||
+    localStorage.getItem(LEGACY_TOKEN_STORAGE_KEY) ||
+    '',
+  authPersistence: localStorage.getItem(TOKEN_STORAGE_KEY) ? 'local' : sessionStorage.getItem(SESSION_TOKEN_STORAGE_KEY) ? 'session' : 'local',
+  user: null,
+  genres: [],
+  categories: [],
+  mangas: [],
+  library: [],
+  history: [],
+  commentsHistory: [],
+  myFeedback: [],
+  recommendations: [],
+  recommendationsMeta: {
+    generatedAt: null,
+    mode: 'random'
+  },
+  ranking: [],
+  view: 'discover',
+  previousView: 'discover',
+  discover: {
+    search: '',
+    category: '',
+    status: '',
+    language: '',
+    advanced: getDefaultLibraryAdvancedFilters(),
+    limit: 24,
+    cursor: 0,
+    hasMore: true,
+    isLoadingMore: false
+  },
+  libraryFilters: {
+    search: '',
+    categoryButton: '',
+    advanced: getDefaultLibraryAdvancedFilters()
+  },
+  rankingFilters: {
+    category: '',
+    status: '',
+    language: ''
+  },
+  settings: {
+    preferredLanguage: 'pt-br',
+    nsfwProtection: 1,
+    stats: {
+      libraryCount: 0,
+      favoriteCount: 0,
+      chaptersRead: 0,
+      pagesRead: 0,
+      completedInLibrary: 0,
+      ongoingInLibrary: 0,
+      categoriesCount: 0
+    }
+  },
+  viewScroll: {
+    discover: 0,
+    library: 0,
+    history: 0,
+    ranking: 0,
+    settings: 0,
+    admin: 0,
+    details: 0,
+    reader: 0
+  },
+  details: {
+    mangaId: null,
+    manga: null,
+    chapters: [],
+    sources: [],
+    availableLanguages: [],
+    selectedSourceId: '',
+    selectedSourceName: '',
+    selectedSourceLanguage: '',
+    selectedLanguage: 'pt-br',
+    selectedChapterId: '',
+    selectedPage: 1,
+    isLoadingChapters: false
+  },
+  reader: {
+    mangaId: null,
+    title: '',
+    coverUrl: '',
+    author: '',
+    sourceId: '',
+    sourceName: '',
+    sourceLanguage: '',
+    sourceLang: '',
+    publicationStatus: 'unknown',
+    chapters: [],
+    currentChapterId: '',
+    currentChapterNumber: 1,
+    pages: [],
+    totalPages: 0,
+    currentPage: 1,
+    mode: 'paged',
+    showOverlay: false,
+    commentsOpen: false,
+    isLoadingNextChapter: false,
+    onPageChange: null,
+    commentsLanguageFilter: 'all',
+    commentsTranslateTo: 'pt-br',
+    comments: [],
+    translatedComments: {},
+    bookmark: null
+  },
+  admin: {
+    activeTab: 'overview',
+    sourceSubTab: 'enabled',
+    stats: {
+      usersCount: 0,
+      adminsCount: 0,
+      mangasCount: 0,
+      savedMangasCount: 0,
+      rawMangasCount: 0,
+      libraryEntriesCount: 0,
+      commentsCount: 0,
+      pendingReportsCount: 0,
+      pendingFeedbackCount: 0,
+      missingCoverCount: 0,
+      missingDescriptionCount: 0,
+      missingGenresCount: 0,
+      duplicatedTitleGroups: 0
+    },
+    syncStatus: {
+      running: false,
+      trigger: '',
+      startedAt: null,
+      endedAt: null,
+      exitCode: null,
+      error: '',
+      continuousMode: false
+    },
+    catalogHealth: {
+      totalMangas: 0,
+      missingCover: 0,
+      missingDescription: 0,
+      missingGenres: 0,
+      duplicatedTitleGroups: 0
+    },
+    sourceHealth: {
+      upCount: 0,
+      downCount: 0,
+      blockedCount: 0,
+      downSources: []
+    },
+    allSuwayomiSources: [],
+    enabledSources: [],
+    selectedRemoteSourceId: '',
+    selectedUserIds: [],
+    users: [],
+    reports: [],
+    feedback: [],
+    comments: [],
+    bannedMangas: [],
+    bannedUsers: []
+  }
+};
+
+export const els = {
+  topbar: document.getElementById('topbar'),
+  authSection: document.getElementById('authSection'),
+  contentSection: document.getElementById('contentSection'),
+  loginForm: document.getElementById('loginForm'),
+  registerForm: document.getElementById('registerForm'),
+  showLogin: document.getElementById('showLogin'),
+  showRegister: document.getElementById('showRegister'),
+  userName: document.getElementById('userName'),
+  logoutBtn: document.getElementById('logoutBtn'),
+  mainTabs: document.getElementById('mainTabs'),
+
+  discoverView: document.getElementById('discoverView'),
+  libraryView: document.getElementById('libraryView'),
+  historyView: document.getElementById('historyView'),
+  rankingView: document.getElementById('rankingView'),
+  settingsView: document.getElementById('settingsView'),
+  adminView: document.getElementById('adminView'),
+  detailsView: document.getElementById('detailsView'),
+  readerView: document.getElementById('readerView'),
+
+  adminTab: document.getElementById('adminTab'),
+  detailsTab: document.getElementById('detailsTab'),
+  readerTab: document.getElementById('readerTab'),
+
+  mangaSearch: document.getElementById('mangaSearch'),
+  mangaSearchBtn: document.getElementById('mangaSearchBtn'),
+  discoverAdvancedFiltersBtn: document.getElementById('discoverAdvancedFiltersBtn'),
+  discoverFilterSummary: document.getElementById('discoverFilterSummary'),
+  discoverRecommendationsGrid: document.getElementById('discoverRecommendationsGrid'),
+  discoverRecommendationsMeta: document.getElementById('discoverRecommendationsMeta'),
+  discoverRecommendHead: document.getElementById('discoverRecommendHead'),
+  discoverRefreshRecommendationsBtn: document.getElementById('discoverRefreshRecommendationsBtn'),
+
+  librarySearch: document.getElementById('librarySearch'),
+  libraryAdvancedFiltersBtn: document.getElementById('libraryAdvancedFiltersBtn'),
+  libraryFilterSummary: document.getElementById('libraryFilterSummary'),
+  libraryCategoryButtons: document.getElementById('libraryCategoryButtons'),
+  libraryFiltersModal: document.getElementById('libraryFiltersModal'),
+  advancedFiltersModalTitle: document.getElementById('advancedFiltersModalTitle'),
+  libraryFiltersModalBody: document.getElementById('libraryFiltersModalBody'),
+  libraryFiltersApplyBtn: document.getElementById('libraryFiltersApplyBtn'),
+  libraryFiltersClearBtn: document.getElementById('libraryFiltersClearBtn'),
+  libraryFiltersCloseBtn: document.getElementById('libraryFiltersCloseBtn'),
+  libraryFiltersCancelBtn: document.getElementById('libraryFiltersCancelBtn'),
+
+  rankingGenreFilter: document.getElementById('rankingGenreFilter'),
+  rankingStatusFilter: document.getElementById('rankingStatusFilter'),
+  rankingLanguageFilter: document.getElementById('rankingLanguageFilter'),
+
+  mangaGrid: document.getElementById('mangaGrid'),
+  discoverLoadMore: document.getElementById('discoverLoadMore'),
+  mangaSearchSuggestions: document.getElementById('mangaSearchSuggestions'),
+  libraryGrid: document.getElementById('libraryGrid'),
+  historyList: document.getElementById('historyList'),
+  historyClearAllBtn: document.getElementById('historyClearAllBtn'),
+  rankingList: document.getElementById('rankingList'),
+
+  toast: document.getElementById('toast'),
+
+  settingsLanguageSelect: document.getElementById('settingsLanguageSelect'),
+  settingsLanguageSave: document.getElementById('settingsLanguageSave'),
+  settingsNsfwProtection: document.getElementById('settingsNsfwProtection'),
+  settingsStats: document.getElementById('settingsStats'),
+  settingsNewCategoryInput: document.getElementById('settingsNewCategoryInput'),
+  settingsAddCategoryBtn: document.getElementById('settingsAddCategoryBtn'),
+  settingsCategoriesList: document.getElementById('settingsCategoriesList'),
+  feedbackCategorySelect: document.getElementById('feedbackCategorySelect'),
+  feedbackInput: document.getElementById('feedbackInput'),
+  feedbackSendBtn: document.getElementById('feedbackSendBtn'),
+  myFeedbackList: document.getElementById('myFeedbackList'),
+  settingsCommentsHistoryList: document.getElementById('settingsCommentsHistoryList'),
+
+  adminStats: document.getElementById('adminStats'),
+  adminSubTabs: document.getElementById('adminSubTabs'),
+  adminRunSyncBtn: document.getElementById('adminRunSyncBtn'),
+  adminRefreshSyncStatusBtn: document.getElementById('adminRefreshSyncStatusBtn'),
+  adminSyncStatus: document.getElementById('adminSyncStatus'),
+  adminCatalogHealth: document.getElementById('adminCatalogHealth'),
+  adminReportsList: document.getElementById('adminReportsList'),
+  adminFeedbackList: document.getElementById('adminFeedbackList'),
+  adminCommentsList: document.getElementById('adminCommentsList'),
+  adminUsersList: document.getElementById('adminUsersList'),
+  adminBannedMangasList: document.getElementById('adminBannedMangasList'),
+  adminAllSourcesList: document.getElementById('adminAllSourcesList'),
+  adminEnabledSourcesList: document.getElementById('adminEnabledSourcesList'),
+  adminShowEnabledSourcesBtn: document.getElementById('adminShowEnabledSourcesBtn'),
+  adminShowAllSourcesBtn: document.getElementById('adminShowAllSourcesBtn'),
+  adminEnabledSourcesSubPanel: document.getElementById('adminEnabledSourcesSubPanel'),
+  adminAllSourcesSubPanel: document.getElementById('adminAllSourcesSubPanel'),
+  adminFetchAllSourcesBtn: document.getElementById('adminFetchAllSourcesBtn'),
+  adminRemoteSourceModal: document.getElementById('adminRemoteSourceModal'),
+  adminRemoteSourceCloseBtn: document.getElementById('adminRemoteSourceCloseBtn'),
+  adminRemoteSearchTools: document.getElementById('adminRemoteSearchTools'),
+  adminRemoteSearchInput: document.getElementById('adminRemoteSearchInput'),
+  adminRemoteSearchBtn: document.getElementById('adminRemoteSearchBtn'),
+  adminSourceMangasTitle: document.getElementById('adminSourceMangasTitle'),
+  adminSourceMangasGrid: document.getElementById('adminSourceMangasGrid'),
+
+  detailsCover: document.getElementById('detailsCover'),
+  detailsTitle: document.getElementById('detailsTitle'),
+  detailsMeta: document.getElementById('detailsMeta'),
+  detailsCategories: document.getElementById('detailsCategories'),
+  detailsDescription: document.getElementById('detailsDescription'),
+  detailsBackBtn: document.getElementById('detailsBackBtn'),
+  detailsFavoriteBtn: document.getElementById('detailsFavoriteBtn'),
+  detailsLibraryBtn: document.getElementById('detailsLibraryBtn'),
+  detailsManageCategoriesBtn: document.getElementById('detailsManageCategoriesBtn'),
+  detailsConfigBtn: document.getElementById('detailsConfigBtn'),
+  detailsReportBtn: document.getElementById('detailsReportBtn'),
+  detailsOpenReaderBtn: document.getElementById('detailsOpenReaderBtn'),
+  detailsSourceSelect: document.getElementById('detailsSourceSelect'),
+  detailsLanguageFilter: document.getElementById('detailsLanguageFilter'),
+  detailsChapterSelect: document.getElementById('detailsChapterSelect'),
+  detailsPageSelect: document.getElementById('detailsPageSelect'),
+  detailsChapterInfo: document.getElementById('detailsChapterInfo'),
+
+  readerCanvas: document.getElementById('readerCanvas'),
+  readerTapLeft: document.getElementById('readerTapLeft'),
+  readerTapCenter: document.getElementById('readerTapCenter'),
+  readerTapRight: document.getElementById('readerTapRight'),
+  readerOverlay: document.getElementById('readerOverlay'),
+  readerTitle: document.getElementById('readerTitle'),
+  readerSubtitle: document.getElementById('readerSubtitle'),
+  readerBackBtn: document.getElementById('readerBackBtn'),
+  readerCommentsBtn: document.getElementById('readerCommentsBtn'),
+  readerBookmarkBtn: document.getElementById('readerBookmarkBtn'),
+  readerModeSelect: document.getElementById('readerModeSelect'),
+  readerChapterSelect: document.getElementById('readerChapterSelect'),
+  readerPageSelect: document.getElementById('readerPageSelect'),
+  readerSaveProgress: document.getElementById('readerSaveProgress'),
+
+  readerCommentsPanel: document.getElementById('readerCommentsPanel'),
+  readerCloseCommentsBtn: document.getElementById('readerCloseCommentsBtn'),
+  commentsLanguageFilter: document.getElementById('commentsLanguageFilter'),
+  commentsTranslateTo: document.getElementById('commentsTranslateTo'),
+  commentsList: document.getElementById('commentsList'),
+  commentForm: document.getElementById('commentForm'),
+  commentLanguageSelect: document.getElementById('commentLanguageSelect'),
+  commentInput: document.getElementById('commentInput'),
+
+  mangaCategoriesModal: document.getElementById('mangaCategoriesModal'),
+  mangaCategoriesModalTitle: document.getElementById('mangaCategoriesModalTitle'),
+  mangaCategoriesModalSubtitle: document.getElementById('mangaCategoriesModalSubtitle'),
+  mangaCategoriesList: document.getElementById('mangaCategoriesList'),
+  mangaCategoriesNewInput: document.getElementById('mangaCategoriesNewInput'),
+  mangaCategoriesCreateBtn: document.getElementById('mangaCategoriesCreateBtn'),
+  mangaCategoriesSaveBtn: document.getElementById('mangaCategoriesSaveBtn'),
+  mangaCategoriesCancelBtn: document.getElementById('mangaCategoriesCancelBtn'),
+  mangaCategoriesCloseBtn: document.getElementById('mangaCategoriesCloseBtn'),
+
+  mangaAdminToolsModal: document.getElementById('mangaAdminToolsModal'),
+
+  appDialogModal: document.getElementById('appDialogModal'),
+  appDialogTitle: document.getElementById('appDialogTitle'),
+  appDialogMessage: document.getElementById('appDialogMessage'),
+  appDialogSelect: document.getElementById('appDialogSelect'),
+  appDialogInput: document.getElementById('appDialogInput'),
+  appDialogCancelBtn: document.getElementById('appDialogCancelBtn'),
+  appDialogConfirmBtn: document.getElementById('appDialogConfirmBtn')
+};

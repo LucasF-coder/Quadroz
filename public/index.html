@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quadroz | Comics & Manga</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20260426-02" />
+  </head>
+  <body>
+    <div id="toast" class="toast hidden"></div>
+
+    <header id="topbar" class="topbar hidden">
+      <div class="brand">
+        <span class="brand-mark">QZ</span>
+        <div>
+          <p class="brand-title">Quadroz</p>
+          <p class="brand-subtitle">Manga, Comics & Continuous Reading</p>
+        </div>
+      </div>
+
+      <nav class="tabs" id="mainTabs">
+        <button class="tab active" data-view="discover">Search</button>
+        <button class="tab" data-view="library">Library</button>
+        <button class="tab" data-view="history">History</button>
+        <button class="tab" data-view="ranking">Ranking</button>
+        <button class="tab" data-view="settings">Settings</button>
+        <button class="tab hidden" data-view="admin" id="adminTab">Admin</button>
+        <button class="tab hidden" data-view="details" id="detailsTab">Details</button>
+        <button class="tab hidden" data-view="reader" id="readerTab">Reader</button>
+      </nav>
+
+      <div class="user-box">
+        <div class="user-meta">
+          <span class="user-label">Logged in as</span>
+          <strong id="userName">-</strong>
+        </div>
+        <button id="logoutBtn" class="btn btn-ghost">Logout</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section id="authSection" class="auth-wrap">
+        <div class="auth-card">
+          <h1>Quadroz</h1>
+          <p>Manage your library, favorites and resume reading from the exact point.</p>
+
+          <div class="auth-switch">
+            <button id="showLogin" class="tab active">Login</button>
+            <button id="showRegister" class="tab">Register</button>
+          </div>
+
+          <form id="loginForm" class="auth-form">
+            <label>
+              Email
+              <input name="email" type="email" placeholder="you@email.com" required />
+            </label>
+            <label>
+              Password
+              <input name="password" type="password" placeholder="******" required />
+            </label>
+            <label class="auth-check">
+              <input name="remember" type="checkbox" />
+              <span class="auth-check-box" aria-hidden="true"></span>
+              <span>Keep me logged in on this device</span>
+            </label>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+
+          <form id="registerForm" class="auth-form hidden">
+            <label>
+              Username
+              <input name="username" type="text" placeholder="Your name" required />
+            </label>
+            <label>
+              Email
+              <input name="email" type="email" placeholder="you@email.com" required />
+            </label>
+            <label>
+              Password
+              <input name="password" type="password" placeholder="Minimum 8 characters" minlength="8" required />
+            </label>
+            <label>
+              Preferred Language
+              <select name="preferredLanguage" required>
+                <option value="pt-br">Portuguese (Brazil)</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+              </select>
+            </label>
+            <button type="submit" class="btn btn-primary">Create account</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="contentSection" class="content hidden">
+        <section id="discoverView" class="view">
+          <div class="section-head">
+            <h2>Search Manga/Comics</h2>
+            <p>Click on the title to open details and start reading with chapter/page selection.</p>
+          </div>
+          <div class="toolbar toolbar-2 discover-toolbar">
+            <input id="mangaSearch" type="text" placeholder="Search by title or author" list="mangaSearchSuggestions" />
+            <button id="mangaSearchBtn" class="btn btn-primary">Search</button>
+            <datalist id="mangaSearchSuggestions"></datalist>
+            <button id="discoverAdvancedFiltersBtn" class="btn" data-action="discover-advanced-filters">Advanced filter</button>
+          </div>
+          <div id="discoverRecommendHead" class="discover-recommend-head">
+            <h3>Random Recommendations</h3>
+            <button id="discoverRefreshRecommendationsBtn" class="btn" data-action="discover-refresh-recommendations">Change recommendations</button>
+          </div>
+          <p id="discoverRecommendationsMeta" class="discover-filter-summary">Loading recommendations...</p>
+          <div id="discoverRecommendationsGrid" class="card-grid card-grid-compact"></div>
+          <p id="discoverFilterSummary" class="discover-filter-summary">0/0 items</p>
+          <div id="mangaGrid" class="card-grid"></div>
+          <div id="discoverLoadMore" class="discover-load-more hidden"></div>
+        </section>
+
+        <section id="libraryView" class="view hidden">
+          <div class="section-head">
+            <h2>Your Library</h2>
+            <p>Continue where you left off and find titles quickly.</p>
+          </div>
+          <div class="library-search-fixed library-controls">
+            <input id="librarySearch" type="text" placeholder="Search the library by name" />
+            <button id="libraryAdvancedFiltersBtn" class="btn" data-action="library-advanced-filters">Advanced filters</button>
+            <p id="libraryFilterSummary" class="library-filter-summary">0/0 items</p>
+          </div>
+          <div id="libraryCategoryButtons" class="chip-filters"></div>
+          <div id="libraryGrid" class="card-grid"></div>
+        </section>
+
+        <section id="rankingView" class="view hidden">
+          <div class="section-head">
+            <h2>Most Favorited Ranking</h2>
+            <p>See trending titles based on community favorites.</p>
+          </div>
+          <div class="toolbar toolbar-3">
+            <select id="rankingGenreFilter">
+              <option value="">All genres</option>
+            </select>
+            <select id="rankingStatusFilter">
+              <option value="">All status</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+            </select>
+            <select id="rankingLanguageFilter">
+              <option value="">All languages</option>
+              <option value="pt-br">Portuguese (Brazil)</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+            </select>
+          </div>
+          <div id="rankingList" class="ranking-list"></div>
+        </section>
+
+        <section id="historyView" class="view hidden">
+          <div class="section-head">
+            <h2>Reading History</h2>
+            <p>Click on the chapter to resume reading. Click on the cover to open manga details.</p>
+            <div class="history-head-actions">
+              <button id="historyClearAllBtn" class="btn btn-danger" data-action="history-clear-all">Clear history</button>
+            </div>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </section>
+
+        <section id="detailsView" class="view hidden">
+          <div class="section-head details-headline">
+            <h2>Manga Details</h2>
+            <p>Choose language, chapter and page before opening the reader.</p>
+          </div>
+
+          <article class="details-card">
+            <img id="detailsCover" class="details-cover" src="/placeholder-cover.svg" alt="Cover" />
+            <div class="details-body">
+              <h3 id="detailsTitle" class="details-title">Select a manga</h3>
+              <p id="detailsMeta" class="details-meta">Status and manga information.</p>
+              <div id="detailsCategories" class="chips"></div>
+              <p id="detailsDescription" class="details-description"></p>
+
+              <div class="details-actions">
+                <button id="detailsBackBtn" class="btn" data-action="details-back">Back</button>
+                <button id="detailsFavoriteBtn" class="btn" data-action="toggle-favorite">Favorite</button>
+                <button id="detailsLibraryBtn" class="btn" data-action="add-library">Add to library</button>
+                <button id="detailsManageCategoriesBtn" class="btn" data-action="manage-categories">Add category</button>
+                <button id="detailsConfigBtn" class="btn" data-action="open-manga-config" title="Manga Settings">Settings</button>
+                <button id="detailsReportBtn" class="btn btn-danger" data-action="report-manga">Report</button>
+                <button id="detailsAdminToolsBtn" class="btn btn-ghost hidden" data-action="open-manga-admin-tools" title="Admin Tools">⚙️</button>
+                <button id="detailsOpenReaderBtn" class="btn btn-primary" data-action="open-reader-from-details">Open reading</button>
+              </div>
+
+              <div class="details-tools">
+                <select id="detailsSourceSelect">
+                  <option value="">Default source</option>
+                </select>
+                <select id="detailsLanguageFilter">
+                  <option value="pt-br">Portuguese (Brazil)</option>
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                </select>
+                <select id="detailsChapterSelect"></select>
+                <select id="detailsPageSelect"></select>
+              </div>
+
+              <p id="detailsChapterInfo" class="details-meta"><span class="loading-spinner hidden"></span> No chapter selected.</p>
+            </div>
+          </article>
+        </section>
+
+        <section id="settingsView" class="view hidden">
+          <div class="section-head">
+            <h2>Settings</h2>
+            <p>Manage library categories, preferred language and your account statistics.</p>
+          </div>
+
+          <div class="settings-grid">
+            <article class="panel">
+              <h3>Adult content protection</h3>
+              <div class="inline-tools">
+                <label class="switch">
+                  <input type="checkbox" id="settingsNsfwProtection" checked />
+                  <span class="slider"></span>
+                </label>
+                <span>Prohibit adult manga and uncategorized ones</span>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h3>Language</h3>
+              <div class="inline-tools">
+                <select id="settingsLanguageSelect">
+                  <option value="pt-br">Portuguese (Brazil)</option>
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                </select>
+                <button id="settingsLanguageSave" class="btn btn-primary" data-action="settings-save-language">Save</button>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h3>Your data</h3>
+              <div id="settingsStats" class="stats-grid"></div>
+            </article>
+
+            <article class="panel panel-full">
+              <h3>Library Categories</h3>
+              <div class="inline-tools">
+                <input id="settingsNewCategoryInput" type="text" maxlength="40" placeholder="New category" />
+                <button id="settingsAddCategoryBtn" class="btn btn-primary" data-action="settings-add-category">Create</button>
+              </div>
+              <div id="settingsCategoriesList" class="settings-categories"></div>
+            </article>
+
+            <article class="panel panel-full">
+              <h3>Feedback</h3>
+              <div class="inline-tools inline-tools-3">
+                <select id="feedbackCategorySelect">
+                  <option value="general">General</option>
+                  <option value="suggestion">Suggestion</option>
+                  <option value="bug">Bug</option>
+                  <option value="content">Content</option>
+                </select>
+                <textarea id="feedbackInput" maxlength="2400" placeholder="Tell us what we can improve..." required></textarea>
+                <button id="feedbackSendBtn" class="btn btn-primary" data-action="send-feedback">Send feedback</button>
+              </div>
+              <div id="myFeedbackList" class="settings-categories"></div>
+            </article>
+
+            <article class="panel panel-full">
+              <h3>Comment History</h3>
+              <p class="panel-subtitle">See your recent comments and remove them whenever you want.</p>
+              <div id="settingsCommentsHistoryList" class="settings-categories"></div>
+            </article>
+          </div>
+        </section>
+
+        <div id="libraryFiltersModal" class="modal hidden">
+          <div class="modal-card library-modal-card">
+            <div class="modal-head">
+              <h3 id="advancedFiltersModalTitle">Advanced Library Filters</h3>
+              <button id="libraryFiltersCloseBtn" class="btn" data-action="library-filters-close">Close</button>
+            </div>
+            <div id="libraryFiltersModalBody" class="modal-body"></div>
+            <div class="modal-actions">
+              <button id="libraryFiltersClearBtn" class="btn" data-action="library-filters-clear">Clear</button>
+              <button id="libraryFiltersCancelBtn" class="btn" data-action="library-filters-cancel">Cancel</button>
+              <button id="libraryFiltersApplyBtn" class="btn btn-primary" data-action="library-filters-apply">Apply</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="mangaCategoriesModal" class="modal hidden">
+          <div class="modal-card categories-modal-card">
+            <div class="modal-head">
+              <h3 id="mangaCategoriesModalTitle">Manga Categories</h3>
+              <button id="mangaCategoriesCloseBtn" class="btn" data-action="close-manga-categories">Close</button>
+            </div>
+            <div class="modal-body categories-modal-body">
+              <p id="mangaCategoriesModalSubtitle" class="panel-subtitle"></p>
+              <div class="inline-tools">
+                <input id="mangaCategoriesNewInput" type="text" maxlength="40" placeholder="New category" />
+                <button id="mangaCategoriesCreateBtn" class="btn btn-primary" data-action="manga-categories-create">Create</button>
+              </div>
+              <div id="mangaCategoriesList" class="category-picker-list"></div>
+            </div>
+            <div class="modal-actions">
+              <button id="mangaCategoriesCancelBtn" class="btn" data-action="close-manga-categories">Cancel</button>
+              <button id="mangaCategoriesSaveBtn" class="btn btn-primary" data-action="manga-categories-save">Save categories</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="mangaAdminToolsModal" class="modal hidden">
+          <div class="modal-card">
+            <div class="modal-head">
+              <h3>Administrative Tools</h3>
+              <button class="btn" data-action="close-manga-admin-tools">Close</button>
+            </div>
+            <div class="modal-body">
+              <p class="panel-subtitle" id="mangaAdminToolsSubtitle">Manga ID: -</p>
+              <div class="settings-grid">
+                <article class="panel">
+                  <h3>Quick Actions</h3>
+                  <div class="inline-tools">
+                    <button class="btn btn-danger" data-action="admin-ban-manga-now">🚫 Ban Manga</button>
+                  </div>
+                </article>
+                <article class="panel">
+                  <h3>Manga Sources</h3>
+                  <p class="panel-subtitle">Remove problematic sources or re-enable blocked ones for this manga.</p>
+                  <div id="mangaAdminSourcesList" class="settings-categories"></div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="appDialogModal" class="modal hidden">
+          <div class="modal-card dialog-modal-card">
+            <div class="modal-head">
+              <h3 id="appDialogTitle">Confirmation</h3>
+            </div>
+            <div class="modal-body">
+              <p id="appDialogMessage" class="dialog-message"></p>
+              <select id="appDialogSelect" class="hidden"></select>
+              <input id="appDialogInput" class="hidden" type="text" maxlength="240" />
+            </div>
+            <div class="modal-actions">
+              <button id="appDialogCancelBtn" class="btn">Cancel</button>
+              <button id="appDialogConfirmBtn" class="btn btn-primary">Confirm</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="adminRemoteSourceModal" class="modal hidden">
+          <div class="modal-card admin-remote-modal-card">
+            <div class="modal-head">
+              <h3 id="adminSourceMangasTitle">Remote Preview</h3>
+              <button id="adminRemoteSourceCloseBtn" class="btn" data-action="admin-remote-source-close">Close</button>
+            </div>
+            <div class="modal-body">
+              <div id="adminRemoteSearchTools" class="inline-tools margin-bottom">
+                <input id="adminRemoteSearchInput" type="text" placeholder="Search manga in this source..." />
+                <button id="adminRemoteSearchBtn" class="btn btn-primary" data-action="admin-remote-search">Remote Search</button>
+              </div>
+              <div id="adminSourceMangasGrid" class="card-grid card-grid-compact"></div>
+            </div>
+          </div>
+        </div>
+
+        <section id="adminView" class="view hidden">
+          <div class="section-head">
+            <h2>Administrative Panel</h2>
+            <p>Manage users, reports, feedback and comments.</p>
+          </div>
+
+          <div id="adminSubTabs" class="admin-subtabs">
+            <button class="tab active" data-action="admin-switch-tab" data-admin-tab="overview">Overview</button>
+            <button class="tab" data-action="admin-switch-tab" data-admin-tab="sources">Sources</button>
+            <button class="tab" data-action="admin-switch-tab" data-admin-tab="sync">Sync</button>
+            <button class="tab" data-action="admin-switch-tab" data-admin-tab="reports">Reports</button>
+            <button class="tab" data-action="admin-switch-tab" data-admin-tab="feedback">Feedback</button>
+            <button class="tab" data-action="admin-switch-tab" data-admin-tab="comments">Comments</button>
+            <button class="tab" data-action="admin-switch-tab" data-admin-tab="users">Users</button>
+            <button class="tab" data-action="admin-switch-tab" data-admin-tab="banned-mangas">Banned Manga</button>
+            <button class="tab" data-action="admin-switch-tab" data-admin-tab="banned-users">Banned Users</button>
+          </div>
+
+          <div class="settings-grid admin-grid">
+            <article class="panel panel-full admin-panel" data-admin-panel="overview">
+              <h3>Overview</h3>
+              <div id="adminStats" class="stats-grid"></div>
+            </article>
+
+            <article class="panel panel-full admin-panel hidden" data-admin-panel="sources">
+              <h3>Manage Sources</h3>
+              
+              <div class="admin-subtabs margin-bottom">
+                <button class="tab active" id="adminShowEnabledSourcesBtn">Enabled Sources</button>
+                <button class="tab" id="adminShowAllSourcesBtn">Discover (All Suwayomi)</button>
+              </div>
+
+              <div id="adminEnabledSourcesSubPanel">
+                <p class="panel-subtitle">Active sources with manga in the local catalog.</p>
+                <div id="adminEnabledSourcesList" class="settings-categories">
+                  <!-- Lista de fontes habilitadas -->
+                </div>
+              </div>
+
+              <div id="adminAllSourcesSubPanel" class="hidden">
+                <p class="panel-subtitle">All sources available in Suwayomi for enablement.</p>
+                <div class="inline-tools">
+                  <button id="adminFetchAllSourcesBtn" class="btn btn-primary" data-action="admin-fetch-all-sources">List all Suwayomi sources</button>
+                </div>
+                <div id="adminAllSourcesList" class="settings-categories margin-top">
+                  <!-- Lista de todas as fontes -->
+                </div>
+              </div>
+            </article>
+
+            <article class="panel panel-full admin-panel hidden" data-admin-panel="sync">
+              <h3>Sync and Catalog Quality</h3>
+              <div class="inline-tools">
+                <button id="adminRunSyncBtn" class="btn btn-primary" data-action="admin-run-sync">Run sync now</button>
+                <button id="adminRefreshSyncStatusBtn" class="btn" data-action="admin-refresh-sync-status">Update status</button>
+              </div>
+              <div id="adminSyncStatus" class="settings-categories"></div>
+              <div id="adminCatalogHealth" class="stats-grid"></div>
+            </article>
+
+            <article class="panel panel-full admin-panel hidden" data-admin-panel="reports">
+              <h3>Reports</h3>
+              <div id="adminReportsList" class="settings-categories"></div>
+            </article>
+
+            <article class="panel panel-full admin-panel hidden" data-admin-panel="feedback">
+              <h3>User Feedback</h3>
+              <div id="adminFeedbackList" class="settings-categories"></div>
+            </article>
+
+            <article class="panel panel-full admin-panel hidden" data-admin-panel="comments">
+              <h3>Recent Comments</h3>
+              <div id="adminCommentsList" class="settings-categories"></div>
+            </article>
+
+            <article class="panel panel-full admin-panel hidden" data-admin-panel="users">
+              <h3>Users</h3>
+              <div id="adminUsersList" class="settings-categories"></div>
+            </article>
+
+            <article class="panel panel-full admin-panel hidden" data-admin-panel="banned-mangas">
+              <h3>Banned Manga</h3>
+              <div id="adminBannedMangasList" class="settings-categories"></div>
+            </article>
+
+            <article class="panel panel-full admin-panel hidden" data-admin-panel="banned-users">
+              <h3>Banned Users</h3>
+              <div id="adminBannedUsersList" class="settings-categories"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="readerView" class="view hidden reader-view">
+          <div id="readerCanvas" class="reader-canvas"></div>
+
+          <button id="readerTapLeft" class="reader-zone reader-zone-left" aria-label="Previous page"></button>
+          <button id="readerTapCenter" class="reader-zone reader-zone-center" aria-label="Open options"></button>
+          <button id="readerTapRight" class="reader-zone reader-zone-right" aria-label="Next page"></button>
+
+          <div id="readerOverlay" class="reader-overlay hidden">
+            <div class="reader-overlay-head">
+              <div>
+                <h2 id="readerTitle">Reader</h2>
+                <p id="readerSubtitle">Touch the center to open/close controls.</p>
+              </div>
+              <button id="readerBackBtn" class="btn" data-action="reader-back">Back</button>
+            </div>
+
+            <div class="reader-overlay-tools">
+              <button id="readerCommentsBtn" class="btn" data-action="reader-toggle-comments">Comments</button>
+              <button id="readerBookmarkBtn" class="btn" data-action="reader-toggle-bookmark">Bookmark page</button>
+              <select id="readerModeSelect">
+                <option value="paged">One page at a time</option>
+                <option value="scroll">Vertical scroll</option>
+              </select>
+              <select id="readerChapterSelect"></select>
+              <select id="readerPageSelect"></select>
+              <button id="readerSaveProgress" class="btn btn-primary" data-action="reader-save-progress">Save progress</button>
+            </div>
+          </div>
+
+          <aside id="readerCommentsPanel" class="reader-comments hidden">
+            <div class="reader-comments-head">
+              <h3>Chapter Comments</h3>
+              <button id="readerCloseCommentsBtn" class="btn" data-action="reader-toggle-comments">Close</button>
+            </div>
+
+            <div class="reader-comments-tools">
+              <select id="commentsLanguageFilter">
+                <option value="all">All languages</option>
+                <option value="pt-br">Portuguese (Brazil)</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+              </select>
+              <select id="commentsTranslateTo">
+                <option value="pt-br">Translate to Portuguese</option>
+                <option value="en">Translate to English</option>
+                <option value="es">Translate to Spanish</option>
+              </select>
+            </div>
+
+            <div id="commentsList" class="comments-list"></div>
+
+            <form id="commentForm" class="comment-form">
+              <select id="commentLanguageSelect">
+                <option value="pt-br">Portuguese (Brazil)</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+              </select>
+              <textarea id="commentInput" maxlength="1200" placeholder="Write a comment about this chapter..." required></textarea>
+              <button type="submit" class="btn btn-primary">Comment</button>
+            </form>
+          </aside>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js?v=20260423-02"></script>
+  </body>
+</html>
